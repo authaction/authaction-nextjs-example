@@ -1,6 +1,6 @@
 # authaction-nextjs-example
 
-This is a Nextjs application demonstrating how to integrate OAuth2 authentication using [AuthAction](https://app.authaction.com/) and NextAuth.js with secure JWT-based session handling.
+This is a Nextjs application demonstrating how to integrate OAuth2 authentication using [AuthAction](https:/authaction.com/) and NextAuth.js with secure JWT-based session handling.
 
 ## Overview
 
