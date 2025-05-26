@@ -46,7 +46,9 @@ Before running this application, ensure you have:
    AUTHACTION_CLIENT_ID=your-authaction-client-id
    AUTHACTION_CLIENT_SECRET=your-authaction-client-secret
    AUTHACTION_TENANT_DOMAIN=your-authaction-tenant-domain.authaction.com
+   NEXT_PUBLIC_AUTHACTION_TENANT_DOMAIN=your-authaction-tenant-domain.authaction.com 
    NEXTAUTH_SECRET=your-random-secret
+   NEXTAUTH_URL=http://localhost:3000
    ```
 ## Usage
 
