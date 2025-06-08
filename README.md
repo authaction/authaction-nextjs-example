@@ -38,7 +38,7 @@ Before running this application, ensure you have:
    npm install
    ```
 
-3. **Configure your Authaction credentials**:
+3. **Configure your AuthAction credentials**:
 
    configure your AuthAction OAuth2 details using environment variables in your .env file
 
@@ -46,41 +46,45 @@ Before running this application, ensure you have:
    AUTHACTION_CLIENT_ID=your-authaction-client-id
    AUTHACTION_CLIENT_SECRET=your-authaction-client-secret
    AUTHACTION_TENANT_DOMAIN=your-authaction-tenant-domain.authaction.com
-   NEXT_PUBLIC_AUTHACTION_TENANT_DOMAIN=your-authaction-tenant-domain.authaction.com 
+   NEXT_PUBLIC_AUTHACTION_TENANT_DOMAIN=your-authaction-tenant-domain.authaction.com
    NEXTAUTH_SECRET=your-random-secret
    NEXTAUTH_URL=http://localhost:3000
    ```
+
+4. **Configure callback url in AuthAction**:
+
+   Configure `http://localhost:3000/api/auth/callback/authaction` in allowed callback urls and `http://localhost:3000` in logout redirect urls
+
 ## Usage
 
 1. **Start the Development Server**
 
-    ```bash
-    npm run dev
-    ```
+   ```bash
+   npm run dev
+   ```
 
-    This will start the Next application on `http://localhost:3000`.
+   This will start the Next application on `http://localhost:3000`.
 
 2. **Testing Authentication**:
 
-    - Navigate to http://localhost:3000.
+   - Navigate to http://localhost:3000.
 
-    - You will be automatically redirected to the AuthAction login page via the NextAuth OAuth2 flow.
+   - You will be automatically redirected to the AuthAction login page via the NextAuth OAuth2 flow.
 
-    - After successful login, you will be redirected to the dashboard with a personalized welcome message.
+   - After successful login, you will be redirected to the dashboard with a personalized welcome message.
 
-    - Click the "View Profile Info" button to fetch and display protected profile data from a secured API route.
+   - Click the "View Profile Info" button to fetch and display protected profile data from a secured API route.
 
-    - Click the "Log Out" button to trigger the OAuth2 logout flow via AuthAction's id_token_hint, and get redirected back to your app after logout.
+   - Click the "Log Out" button to trigger the OAuth2 logout flow via AuthAction's id_token_hint, and get redirected back to your app after logout.
 
 ## Code Explanation
 
-
 ### Configuration (`pages/api/auth/[...nextauth].ts`)
 
-  - Uses `next-auth` with a custom OAuth2 provider pointing to AuthAction's `.well-known/openid-configuration`.
-  - Handles both `access_token` and `id_token` returned from AuthAction.
-  - Tokens are stored securely using the JWT session strategy (`session: { strategy: "jwt" }`).
-  - The `callbacks.jwt` and `callbacks.session` ensure that tokens are correctly extracted and attached to the user's session.
+- Uses `next-auth` with a custom OAuth2 provider pointing to AuthAction's `.well-known/openid-configuration`.
+- Handles both `access_token` and `id_token` returned from AuthAction.
+- Tokens are stored securely using the JWT session strategy (`session: { strategy: "jwt" }`).
+- The `callbacks.jwt` and `callbacks.session` ensure that tokens are correctly extracted and attached to the user's session.
 
 ---
 
@@ -113,5 +117,3 @@ Before running this application, ensure you have:
 ## Contributing
 
 Feel free to submit issues or pull requests if you find any bugs or have improvements to suggest.
-
-
