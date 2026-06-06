@@ -13,6 +13,7 @@ export function Providers({ children }: ProvidersProps): JSX.Element {
       domain={process.env.NEXT_PUBLIC_AUTHACTION_DOMAIN!}
       clientId={process.env.NEXT_PUBLIC_AUTHACTION_CLIENT_ID!}
       redirectUri={process.env.NEXT_PUBLIC_AUTHACTION_REDIRECT_URI!}
+      postLogoutRedirectUri={process.env.NEXT_PUBLIC_AUTHACTION_LOGOUT_REDIRECT_URI}
     >
       {children}
     </AuthActionNextProvider>
