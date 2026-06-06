@@ -1,12 +1,20 @@
 "use client";
 
 import React, { JSX, ReactNode } from "react";
-import { SessionProvider } from "next-auth/react";
+import { AuthActionNextProvider } from "@authaction/web-sdk/nextjs";
 
 interface ProvidersProps {
   children: ReactNode;
 }
 
 export function Providers({ children }: ProvidersProps): JSX.Element {
-  return <SessionProvider>{children}</SessionProvider>;
+  return (
+    <AuthActionNextProvider
+      domain={process.env.NEXT_PUBLIC_AUTHACTION_DOMAIN!}
+      clientId={process.env.NEXT_PUBLIC_AUTHACTION_CLIENT_ID!}
+      redirectUri={process.env.NEXT_PUBLIC_AUTHACTION_REDIRECT_URI!}
+    >
+      {children}
+    </AuthActionNextProvider>
+  );
 }

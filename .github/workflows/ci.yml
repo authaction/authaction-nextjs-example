@@ -24,8 +24,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          NEXTAUTH_SECRET: dummy-secret-for-ci
-          NEXTAUTH_URL: http://localhost:3000
-          AUTHACTION_TENANT_DOMAIN: example.authaction.com
-          AUTHACTION_CLIENT_ID: dummy-client-id
-          AUTHACTION_CLIENT_SECRET: dummy-client-secret
+          NEXT_PUBLIC_AUTHACTION_DOMAIN: example.authaction.com
+          NEXT_PUBLIC_AUTHACTION_CLIENT_ID: dummy-client-id
+          NEXT_PUBLIC_AUTHACTION_REDIRECT_URI: http://localhost:3000/callback

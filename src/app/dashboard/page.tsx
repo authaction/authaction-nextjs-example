@@ -1,14 +1,27 @@
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import { authOptions } from "../../../pages/api/auth/[...nextauth]";
+"use client";
+
+import { useAuthAction } from "@authaction/web-sdk/nextjs";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Dashboard from "../components/dashboard";
 
-export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
+export default function DashboardPage() {
+  const { isAuthenticated, isLoading } = useAuthAction();
+  const router = useRouter();
 
-  if (!session) {
-    redirect("/api/auth/signin?callbackUrl=/dashboard");
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.replace("/");
+    }
+  }, [isAuthenticated, isLoading, router]);
+
+  if (isLoading || !isAuthenticated) {
+    return (
+      <main className="flex items-center justify-center h-screen">
+        <p>Loading...</p>
+      </main>
+    );
   }
 
-  return <Dashboard user={session.user} />;
+  return <Dashboard />;
 }
