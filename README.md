@@ -1,16 +1,16 @@
 # authaction-nextjs-example
 
-This is a Nextjs application demonstrating how to integrate OAuth2 authentication using [AuthAction](https:/authaction.com/) and NextAuth.js with secure JWT-based session handling.
+This is a Next.js application demonstrating how to integrate OAuth2 authentication using [AuthAction](https://authaction.com/) with the `@authaction/web-sdk` library.
 
 ## Overview
 
 This application showcases:
 
-- OAuth2 login flow using AuthAction via NextAuth.js.
-- Storing and accessing accessToken and idToken via JWT sessions.
+- OAuth2 login flow using `@authaction/web-sdk/nextjs`.
+- Wrapping the app with `AuthActionNextProvider` for global auth state.
 - Protected route example (`/dashboard`) that shows authenticated content.
-- Logout handling with AuthAction-compliant redirect and token hint.
-- Secure API route (`/api/profile`) that uses the session to return protected user info.
+- Logout handling with AuthAction's redirect flow.
+- Handling the OAuth2 callback with `handleRedirectCallback`.
 
 ## Prerequisites
 
@@ -20,8 +20,7 @@ Before running this application, ensure you have:
 2. **AuthAction OAuth2 credentials**:
    - Tenant Domain
    - Client ID
-   - Client Secret
-   - Redirect URIs (login and logout)
+   - Redirect URIs (login callback and logout)
 
 ## Installation
 
@@ -40,20 +39,18 @@ Before running this application, ensure you have:
 
 3. **Configure your AuthAction credentials**:
 
-   configure your AuthAction OAuth2 details using environment variables in your .env file
+   configure your AuthAction OAuth2 details using environment variables in your `.env.local` file
 
    ```bash
-   AUTHACTION_CLIENT_ID=your-authaction-client-id
-   AUTHACTION_CLIENT_SECRET=your-authaction-client-secret
-   AUTHACTION_TENANT_DOMAIN=your-authaction-tenant-domain.authaction.com
-   NEXT_PUBLIC_AUTHACTION_TENANT_DOMAIN=your-authaction-tenant-domain.authaction.com
-   NEXTAUTH_SECRET=your-random-secret
-   NEXTAUTH_URL=http://localhost:3000
+   NEXT_PUBLIC_AUTHACTION_DOMAIN=your-authaction-tenant-domain
+   NEXT_PUBLIC_AUTHACTION_CLIENT_ID=your-authaction-client-id
+   NEXT_PUBLIC_AUTHACTION_REDIRECT_URI=http://localhost:3000/callback
+   NEXT_PUBLIC_AUTHACTION_LOGOUT_REDIRECT_URI=http://localhost:3000
    ```
 
-4. **Configure callback url in AuthAction**:
+4. **Configure callback and logout URLs in AuthAction**:
 
-   Configure `http://localhost:3000/api/auth/callback/authaction` in allowed callback urls and `http://localhost:3000` in logout redirect urls
+   Configure `http://localhost:3000/callback` in allowed callback URLs and `http://localhost:3000` in logout redirect URLs.
 
 ## Usage
 
@@ -63,53 +60,53 @@ Before running this application, ensure you have:
    npm run dev
    ```
 
-   This will start the Next application on `http://localhost:3000`.
+   This will start the Next.js application on `http://localhost:3000`.
 
 2. **Testing Authentication**:
 
-   - Navigate to http://localhost:3000.
+   - Navigate to `http://localhost:3000`.
 
-   - You will be automatically redirected to the AuthAction login page via the NextAuth OAuth2 flow.
+   - Click the **Login** button to be redirected to the AuthAction login page via the OAuth2 flow.
 
-   - After successful login, you will be redirected to the dashboard with a personalized welcome message.
+   - After successful login, you will be redirected back to `/callback`, which completes the exchange and then forwards you to the dashboard with a personalized welcome message.
 
-   - Click the "View Profile Info" button to fetch and display protected profile data from a secured API route.
-
-   - Click the "Log Out" button to trigger the OAuth2 logout flow via AuthAction's id_token_hint, and get redirected back to your app after logout.
+   - Click the **Log Out** button to trigger the logout flow and be redirected back to your app.
 
 ## Code Explanation
 
-### Configuration (`pages/api/auth/[...nextauth].ts`)
+### Providers (`src/app/providers.tsx`)
 
-- Uses `next-auth` with a custom OAuth2 provider pointing to AuthAction's `.well-known/openid-configuration`.
-- Handles both `access_token` and `id_token` returned from AuthAction.
-- Tokens are stored securely using the JWT session strategy (`session: { strategy: "jwt" }`).
-- The `callbacks.jwt` and `callbacks.session` ensure that tokens are correctly extracted and attached to the user's session.
+- Wraps the application with `AuthActionNextProvider` from `@authaction/web-sdk/nextjs`.
+- Passes `domain`, `clientId`, `redirectUri`, and `postLogoutRedirectUri` from `NEXT_PUBLIC_*` environment variables.
 
 ---
 
-### Dashboard Component (`/app/dashboard/page.tsx`)
+### Login Button (`src/app/loginbutton.tsx`)
 
-- Uses `useSession` from `next-auth/react` to determine the authentication state of the user.
-- Displays a personalized welcome message based on the authenticated user's name.
-- Includes a **"View Profile Info"** button, which triggers a modal using a `Dialog` component.
-- The modal fetches protected profile data from an API route (`/api/profile`) if the user is authenticated.
-- A **"Log Out"** button triggers `signOut()` and then manually redirects the user to AuthAction’s logout endpoint with `id_token_hint` and `post_logout_redirect_uri`.
+- Uses `useAuthAction()` from `@authaction/web-sdk/nextjs` to get `loginWithRedirect`.
+- Calls `loginWithRedirect({ appState: { returnTo: '/dashboard' } })` on click so the user lands on the dashboard after login.
 
 ---
 
-### Protected API Route (`pages/api/profile.ts`)
+### Callback Page (`src/app/callback/page.tsx`)
 
-- Uses `getServerSession()` to validate the presence of a valid authenticated session.
-- If a valid session exists, it returns the user's `name` and `email`.
-- If no session is found (unauthenticated access), it responds with a `401 Unauthorized` status and an error message.
+- Uses `useAuthAction()` to get `handleRedirectCallback`.
+- Called on mount: exchanges the authorization code for tokens and redirects to `appState.returnTo` (or `/dashboard`).
+
+---
+
+### Dashboard Page (`src/app/dashboard/page.tsx`)
+
+- Uses `useAuthAction()` to get `isAuthenticated`, `isLoading`, `user`, and `logout`.
+- Redirects unauthenticated users back to `/` via `useRouter`.
+- Displays the user's name and email and provides a **Log Out** button.
 
 ## Common Issues
 
 - **Redirects not working**:
 
-  - Ensure that the `redirectUri` and `logoutRedirectUri` match the URIs configured in your [AuthAction](https://app.authaction.com/) application settings.
-  - Make sure the application is running on the same port as specified in the `redirectUri`.
+  - Ensure that `NEXT_PUBLIC_AUTHACTION_REDIRECT_URI` and `NEXT_PUBLIC_AUTHACTION_LOGOUT_REDIRECT_URI` match the URIs configured in your [AuthAction](https://app.authaction.com/) application settings.
+  - Make sure the application is running on the same port as specified in the redirect URIs.
 
 - **Network Errors**:
   - Verify that your network allows traffic to the Authaction servers and that there are no firewall rules blocking the OAuth2 redirects.
