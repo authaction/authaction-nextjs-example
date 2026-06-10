@@ -4,8 +4,8 @@ import { Metadata } from "next";
 import React, { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "My NextAuth App",
-  description: "",
+  title: "AuthAction Example",
+  description: "OAuth2 authentication demo powered by AuthAction",
 };
 
 interface RootLayoutProps {

@@ -1,85 +1,82 @@
 "use client";
 
 import { useAuthAction } from "@authaction/web-sdk/nextjs";
-import Image from "next/image";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 const Dashboard = () => {
   const { user, logout } = useAuthAction();
 
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "?";
+
   return (
-    <div className="min-h-screen bg-gray-100 text-black">
-      <header className="bg-white shadow">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Auth Dashboard</h1>
-          <nav className="flex gap-6">
-            <a href="#" className="text-blue-600 hover:underline">Home</a>
-            <a href="#" className="text-blue-600 hover:underline">Settings</a>
-            <a href="#" className="text-blue-600 hover:underline">About</a>
-          </nav>
-          <button
-            onClick={() => logout()}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
-          >
-            Log Out
-          </button>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-gray-900 flex items-center justify-center text-white text-sm font-bold">
+              A
+            </div>
+            <span className="font-semibold text-gray-900">AuthAction</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">
+              {initials}
+            </div>
+            <button
+              onClick={() => logout()}
+              className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8">
-        <div className="flex justify-center">
-          <h2 className="text-xl font-semibold mb-4">Welcome back, {user?.name}</h2>
+      <main className="max-w-5xl mx-auto px-6 py-10">
+        <div className="mb-8">
+          <p className="text-sm text-gray-500">Welcome back</p>
+          <h1 className="text-2xl font-semibold text-gray-900 mt-0.5">
+            {user?.name}
+          </h1>
         </div>
-        <Dialog>
-          <DialogTrigger asChild>
-            <div className="flex justify-center">
-              <button className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow">
-                View Profile Info
-              </button>
-            </div>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Profile Details</DialogTitle>
-              <DialogDescription>Here is your user data.</DialogDescription>
-            </DialogHeader>
-            <div className="mt-4 space-y-2 text-sm text-gray-800">
-              <p><span className="font-medium">Name:</span> {user?.name}</p>
-              <p><span className="font-medium">Email:</span> {user?.email}</p>
-            </div>
-          </DialogContent>
-        </Dialog>
 
-        <section className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <Image src="/images/istockphoto.jpg" alt="Cybersecurity" width={400} height={250} className="rounded-t-lg object-cover h-40" />
-            <div className="p-4">
-              <p className="text-lg font-semibold mb-4">"Authentication is the first line of defense against cyber threats."</p>
-              <p className="text-sm text-gray-600">- Auth</p>
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+              Full Name
+            </p>
+            <p className="text-gray-900 font-medium">{user?.name ?? "—"}</p>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <Image src="/images/istockphoto2.jpg" alt="Cybersecurity" width={400} height={250} className="rounded-t-lg object-cover h-40" />
-            <div className="p-4">
-              <p className="text-lg font-semibold mb-4">"Without strong authentication, even the best security is useless."</p>
-              <p className="text-sm text-gray-600">- Auth</p>
-            </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+              Email
+            </p>
+            <p className="text-gray-900 font-medium">{user?.email ?? "—"}</p>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <Image src="/images/add-to-cart.webp" alt="Cybersecurity" width={400} height={250} className="rounded-t-lg object-cover h-40" />
-            <div className="p-4">
-              <p className="text-lg font-semibold mb-4">"Your password is the key to your kingdom; make sure it's strong."</p>
-              <p className="text-sm text-gray-600">- Auth</p>
-            </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+              User ID
+            </p>
+            <p className="text-gray-900 font-mono text-sm truncate">
+              {user?.sub ?? "—"}
+            </p>
           </div>
-        </section>
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-1">
+              Status
+            </p>
+            <span className="inline-flex items-center gap-1.5 text-sm font-medium text-green-700">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              Authenticated
+            </span>
+          </div>
+        </div>
       </main>
     </div>
   );

@@ -8,9 +8,9 @@ export default function LoginButton() {
   return (
     <button
       onClick={() => loginWithRedirect({ appState: { returnTo: "/dashboard" } })}
-      className="px-6 py-3 bg-black hover:bg-blue-700 text-white rounded-lg shadow-lg"
+      className="w-full py-2.5 px-4 bg-gray-900 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors"
     >
-      Login
+      Continue
     </button>
   );
 }
