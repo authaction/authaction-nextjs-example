@@ -42,7 +42,7 @@ Before running this application, ensure you have:
    configure your AuthAction OAuth2 details using environment variables in your `.env.local` file
 
    ```bash
-   NEXT_PUBLIC_AUTHACTION_DOMAIN=your-authaction-tenant-domain
+   NEXT_PUBLIC_AUTHACTION_TENANT_DOMAIN=your-authaction-tenant-domain
    NEXT_PUBLIC_AUTHACTION_CLIENT_ID=your-authaction-client-id
    NEXT_PUBLIC_AUTHACTION_REDIRECT_URI=http://localhost:3000/callback
    NEXT_PUBLIC_AUTHACTION_LOGOUT_REDIRECT_URI=http://localhost:3000
