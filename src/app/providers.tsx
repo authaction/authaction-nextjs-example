@@ -14,6 +14,7 @@ export function Providers({ children }: ProvidersProps): JSX.Element {
       clientId={process.env.NEXT_PUBLIC_AUTHACTION_CLIENT_ID!}
       redirectUri={process.env.NEXT_PUBLIC_AUTHACTION_REDIRECT_URI!}
       postLogoutRedirectUri={process.env.NEXT_PUBLIC_AUTHACTION_LOGOUT_REDIRECT_URI}
+      cacheLocation="localstorage"
     >
       {children}
     </AuthActionNextProvider>
